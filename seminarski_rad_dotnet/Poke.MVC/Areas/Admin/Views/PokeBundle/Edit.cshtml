@@ -1,0 +1,97 @@
+@model Poke.Data.Model.PokeBundle
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>PokeBundle</h4>
+<hr />
+<form asp-action="Edit">
+    <div class="row">
+        <div class="col-md-5">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+            <div class="form-group mb-2">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label for="PackDescription" class="control-label">Description</label>
+                <input asp-for="PackDescription" class="form-control" />
+                <span asp-validation-for="PackDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5">
+            <div class="form-group mb-2">
+                <label for="PokemonIds">Pokemon:</label>
+                <div class="input-group">    
+                    <select id="PokemonIds" class="form-control" aria-describedby="button-addon1">
+                        @foreach (var item in (List<Poke.Data.Model.MyPokemon>)ViewBag.pokes)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                    <button type="button" id="button-addon1" class="btn btn-outline-secondary" onclick='AddPoke()'>Add</button>
+                </div>
+            </div>
+            <div class="form-group mb-2">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Image
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="insertPoke">
+                        @foreach (var item in (List<Poke.Data.Model.MyPokemon>)ViewBag.added_pokemon)
+                        {
+                            <tr id="table_row_@item.Id">
+                                <td>
+                                    <img src="@item.Url_full_image" class="poke_full_small" />
+                                </td>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    <input type="checkbox" value="@item.Id" name="PokemonIds[]" style="visibility:hidden;" checked />
+                                    <button type="button" class="btn btn-danger" onclick="document.getElementById('table_row_@item.Id').remove()">
+                                        Remove
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

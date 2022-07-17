@@ -1,0 +1,45 @@
+@using Poke.Data.Model
+@model Poke.Data.Model.PokeProduct
+
+@{
+    ViewData["Title"] = "Details";
+
+    var poke = (MyPokemon)ViewBag.Pokemon;
+}
+<h1>Details</h1>
+
+<div>
+    <h4>PokeProduct</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <dl class="row">
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Price)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.Price)
+                </dd>
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Quantity)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.Quantity)
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-8">
+            @*here goes more info on product/pokemon*@
+        </div>
+    </div>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    <a asp-action="Index">Back to List</a>
+</div>

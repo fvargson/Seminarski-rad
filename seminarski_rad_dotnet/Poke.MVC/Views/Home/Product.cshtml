@@ -1,0 +1,112 @@
+@model Poke.Data.Model.PokeProduct
+
+@{
+    ViewData["Title"] = Model.Name + " - " + Model.PokemonId;
+    var pokemon = (Poke.Data.Model.MyPokemon)ViewBag.pokemon;
+    var sc_info = (PokeApiNet.PokemonSpecies)ViewBag.sc_info;
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>@Model.Name</h4>
+    <hr />
+    <div class="row">
+        <div class="col">
+            <dl class="row">
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Price)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.Price)
+                    <img src="~/img/PokeDollar.png" class="mb-1" />
+                </dd>
+                <div class="row border rounded pt-2">
+                    <dt class="col-sm-2">
+                        Total
+                    </dt>
+                    <dd class="col-sm-10">
+                        <price id="totalPrice">
+                            @Model.Price
+                        </price>
+                        <img src="/img/PokeDollar.png" class="mb-1">
+                    </dd>
+                </div>
+            </dl>
+            <form asp-controller="Cart" asp-action="AddProductToCart" asp-route-id="@Model.Id" class="form">
+                <div class="form-group">
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <input type="number" id="quantity" name="quantity" min="1" max="@Model.Quantity" onchange="updateTotal()" value="1" class="form-control mb-2" />
+                </div>
+                <input type="submit" class="btn btn-success mb-2" value="Add to cart" />
+            </form>
+        </div>
+        <div class="col text-end">
+            <div class="row">
+                <div class="col">
+                    <img src="@pokemon.Url_full_image" class="poke_full" />
+                </div>
+                <div class="col">
+                    <img src="@pokemon.Url_fd" class="poke_fd_small" />
+                    <img src="@pokemon.Url_fd_shiny" class="poke_fd_small" />
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Color</th>
+                        @if(sc_info.EvolvesFromSpecies != null)
+                        {
+                            <th>Evolve from</th>
+                        }
+                        <th>Generation</th>
+                        <th>Shape</th>
+                        @if(sc_info.IsLegendary)
+                        {
+                            <th></th>
+                        }
+                        @if(sc_info.IsMythical)
+                        {
+                            <th></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@sc_info.Color.Name</td>
+                        @if(sc_info.EvolvesFromSpecies != null)
+                        {
+                            <td>@sc_info.EvolvesFromSpecies.Name</td>
+                        }
+                        <td>@sc_info.Generation.Name</td>
+                        <td>@sc_info.Shape.Name</td>
+                        @if(sc_info.IsLegendary)
+                        {
+                            <td><b>Legendary</b></td>
+                        }
+                        @if(sc_info.IsMythical)
+                        {
+                            <td><b>Mythical</b></td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to Products</a>
+</div>
+<script>
+    function updateTotal() {
+        var quantity = document.getElementById('quantity').value;
+        var total = document.getElementById('totalPrice');
+        total.innerHTML = quantity * @Model.Price;
+    }
+</script>

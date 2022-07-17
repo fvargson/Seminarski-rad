@@ -1,0 +1,51 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+img.poke_fd {
+  height: 150px;
+  width: 150px;
+}
+
+img.poke_fd_small {
+  height: 80px;
+  width: 80px;
+}
+
+img.poke_full {
+  height: 160px;
+  width: 160px;
+}
+
+img.poke_full_small {
+  height: 40px;
+  width: 40px;
+}
+
+a.nav-hover-custom:hover {
+  background-color: mediumturquoise;
+  color: white;
+}
+
+.zoom {
+  transition: .2s;
+}
+
+.zoom:hover {
+  transform: scale(1.02);
+}

@@ -1,0 +1,85 @@
+@using Microsoft.AspNetCore.Identity
+@model Microsoft.AspNetCore.Identity.IdentityUser
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+@if(ViewBag.errors != null)
+{
+    @foreach (var item in (List<string>)ViewBag.errors)
+    {
+        <div role="alert" class="alert alert-danger">
+            @item
+        </div>
+    }
+}
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="form-group mb-2">
+                <label for="email">Email</label>
+                <input name="Email" id="email" class="form-control" value="@Model.Email" required />
+            </div>
+            <div class="form-group mb-2">
+                <label for="Emailconfirmed">E-mail confirmed</label>
+                <select name="EmailConfirmed" id="EamailConfirmed" class="form-control" required>
+                    @foreach (var item in (new List<(string, bool)>() {("Yes", true), ("No", false)}))
+                    {
+                        @if(Model.EmailConfirmed == item.Item2)
+                        {
+                            <option value="@item.Item2" selected>@item.Item1</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Item2">@item.Item1</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group mb-2">
+                <label for="phoneNumber">Phone Number</label>
+                <input name="phoneNumber" id="phoneNumber" class="form-control" value="@Model.PhoneNumber" />
+            </div>
+            <hr />
+            <p class="mb-2">Only Admin can reset password, Type new password and Admin password in fields below</p>
+            <div class="form-group mb-2">
+                <label for="resetPass">Reset Password</label>
+                <input type="password" name="password" id="resetPass" class="form-control" />
+            </div>
+            <div class="form-group mb-2">
+                <label for="adminPass">Admin Password</label>
+                <input type="password" name="adminPass" id="adminPass" class="form-control" />
+            </div>
+            <hr />
+            <p class="mb-2">Admins cannot change roles nor delete account, Admin must be logged on to delete their own account.</p>
+            @if(ViewBag.Role != "Admin")
+            {
+                <div class="form-group mb-2">
+                    <label for="role">Type</label>
+                    <select name="Role" id="role" class="form-control">
+                        <option value="User">User</option>
+                        @foreach (var item in (List<IdentityRole>)ViewBag.roles)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            }
+            <div class="form-group mb-2">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<a asp-action="Index">Back to list</a>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

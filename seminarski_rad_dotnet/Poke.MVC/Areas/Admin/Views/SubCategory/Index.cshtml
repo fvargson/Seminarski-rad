@@ -1,0 +1,50 @@
+@using Poke.Data.Model
+@model IEnumerable<Poke.Data.Model.SubCategory>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                Category
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @(((List<PokeCategory>)ViewBag.categories).Where(pc => pc.Id == item.PokeCategoryId).Select(pc => pc.Name).FirstOrDefault())
+            </td>
+            <td>
+                @if(item.Id >= 31)
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                    @Html.DisplayText(" | ")
+                }
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
+                @if(item.Id >= 31)
+                {
+                    @Html.Display(" | ")
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

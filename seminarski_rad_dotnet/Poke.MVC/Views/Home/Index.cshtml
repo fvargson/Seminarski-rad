@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Poke.Data.Model.PokeProduct>
+
+@{
+    ViewData["Title"] = "Home Page";
+    var poke_repo = new Poke.Data.Repository.PokeRepository();
+}
+
+<div class="text-center">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="d-flex flex-column flex-shrink-0 p-3 bg-light col-2 text-start shadow">
+                <a href="#" style="cursor:default;"
+                    class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                    <span class="fs-4">Category</span>
+                </a>
+                <hr />
+                <ul class="nav nav-pills mb-auto flex-column">
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-route-id="0" class=" nav-link" aria-current="page"><b>Home</b></a>
+                    </li>
+                    @foreach (var item in (List<Poke.Data.Model.PokeCategory>)ViewBag.categories)
+                    {
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#collapse_@item.Id" class="nav-link "
+                            aria-current="page"><b>@item.Name</b></a>
+                            <div id="collapse_@item.Id" class="collapse">
+                                <ul class="nav nav-pills mb-auto">
+                                    @foreach (var subitem in
+                                   ((List<Poke.Data.Model.SubCategory>)ViewBag.subCategories).Where(sc => sc.PokeCategoryId
+                                   == item.Id).OrderBy(sc => sc.Id).ToList())
+                                    {
+                                        <a asp-action="Index" asp-route-id="@subitem.Id"
+                                    class="nav-link nav-hover-custom @((int)ViewBag.subCategory_id == subitem.Id?"active":"")"
+                                    aria-current="page">@subitem.Name</a>
+                                    }
+                                </ul>
+                                <hr />
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="col-10">
+                <div class="container-fluid">
+                    <div class="row mt-2">
+                        @foreach (var item in (List<Poke.Data.Model.PokeProduct>)Model)
+                        {
+                            var pokemon = poke_repo.GetPokemonById(item.PokemonId);
+                            var sc_info = poke_repo.GetPokeInfo(item.PokemonId);
+                            var color = poke_repo.LighterColor(sc_info.Color.Name);
+
+                            <div class="zoom col-md-5 mb-3 mx-3 p-3 shadow rounded"
+                            style="background-color:@color;">
+                                <a asp-controller="Home" asp-action="Product" asp-route-id="@item.Id" class="nav-link"
+                                style="color: Black;">
+                                    <div class="row">
+                                        <h5>@item.Name</h5>
+                                        <hr />
+                                        <div class="col">
+                                            <img src="@pokemon.Url_full_image" alt="@pokemon.Name" class="poke_full shadow"
+                                            style="background-color: #DEDEDE;" />
+                                        </div>
+                                        <div class="col">
+                                            <img src="@pokemon.Url_fd" alt="front_@pokemon.Name" class="poke_fd_small" />
+                                            <img src="@pokemon.Url_fd_shiny" alt="shiny_@pokemon.Name" class="poke_fd_small" />
+                                        </div>
+                                        <div class="col text-end">
+                                            <p>Color: @sc_info.Color.Name</p>
+                                            <p>@sc_info.Generation.Name</p>
+                                            @if (sc_info.EvolvesFromSpecies != null)
+                                            {
+                                                <p>Evoles from: @sc_info.EvolvesFromSpecies.Name</p>
+                                            }
+                                            <p>Shape: @sc_info.Shape.Name</p>
+                                            <hr />
+                                            <p>
+                                                Price: @item.Price <img src="~/img/PokeDollar.png" class="mb-1" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @foreach (var item in (List<Poke.Data.Model.PokeBundle>)ViewBag.bundles)
+                        {
+                            <div class="col-md-5 mb-3 mx-3 p-3 shadow rounded">
+                                <a asp-controller="Home" asp-action="Bundle" asp-route-id="@item.Id" class="nav-link"
+                                style="color: Black;">
+                                    <div class="row">
+                                        <h5>@item.Name - Bundle</h5>
+                                        <hr />
+                                        <div class="col text-start">
+                                            <p>@item.PackDescription</p>
+                                        </div>
+                                        <div class="col text-end">
+                                            <hr />
+                                            <p>
+                                                Price: @item.Price <img src="~/img/PokeDollar.png" class="mb-1" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

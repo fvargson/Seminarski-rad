@@ -1,0 +1,84 @@
+@using Microsoft.AspNetCore.Identity
+@model IEnumerable<IdentityUser>
+
+@inject UserManager<IdentityUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+@if(ViewBag.msg != null)
+{
+    <div role="alert" class="alert alert-danger">
+        @ViewBag.msg
+    </div>
+}
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Type
+            </th>
+            <th>
+                Username
+            </th>
+            <th>
+                E-mail
+            </th>
+            <th>
+                E-mail verified
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) 
+{
+        var roles = (await UserManager.GetRolesAsync(item));
+        var role = (roles.Count() == 0)? "User": "Admin"; 
+        <tr>
+            <td>
+                
+                @role
+            </td>
+            <td>
+                @item.UserName
+            </td>
+            <td>
+                @item.Email
+            </td>
+            <td>
+                @if(item.EmailConfirmed)
+                {
+                    <input type="checkbox" disabled checked />
+                }
+                else
+                {
+                    <input type="checkbox" disabled />
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id})
+                @if(role != "Admin")
+                {
+                    @Html.Raw("|")
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

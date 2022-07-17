@@ -1,0 +1,95 @@
+@model IEnumerable<Poke.MVC.Extensions.CartItem>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>PokeCart</h1>
+
+@if(Model.Count() == 0)
+{
+    <p>
+        You have not added any products to your cart yet.
+    </p>
+}
+<p>
+    <a asp-action="Index" asp-controller="Home">Continue Shopping</a>
+</p>
+@if(Model.Count() != 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                @if(item.Product != null)
+                {
+                    string img_url = new Poke.Data.Repository.PokeRepository().GetPokemonById(item.Product.PokemonId).Url_full_image;
+                    <td>@item.Product.Name</td>
+                    <td>
+                        <img src="@img_url" class="poke_full_small" />
+                    </td>
+                    <td>
+                        @item.Product.Price
+                        <img src="~/img/PokeDollar.png" class="mb-1" />
+                    </td>
+                    <td>@item.Quantity</td>
+                    <td>@item.GetTotal()</td>
+                    <td>
+                        @Html.ActionLink("Details", "Product", "Home", new { id = item.Product.Id }) |
+                        @Html.ActionLink("Remove", "RemoveProductFromCart", "Cart", new { id = item.Product.Id })
+                    </td>
+                }
+                @if(item.Bundle != null)
+                {
+                    <td>@item.Bundle.Name</td>
+                    <td>
+                        <p>@item.Bundle.PackDescription</p>
+                    </td>
+                    <td>
+                        @item.Bundle.Price
+                        <img src="~/img/PokeDollar.png" class="mb-1" />
+                    </td>
+                    <td>@item.Quantity</td>
+                    <td>@item.GetTotal()</td>
+                    <td>
+                        @Html.ActionLink("Details", "Bundle", "Home", new { id = item.Bundle.Id }) |
+                        @Html.ActionLink("Remove", "RemoveBundleFromCart", "Cart", new { id = item.Bundle.Id })
+                    </td>
+                }
+            </tr>
+        }
+            <tr>
+                <td colspan="3"></td>
+                <td>
+                    <h5><b>Total</b></h5>
+                </td>
+                <td>
+                    @ViewBag.Total
+                    <img src="~/img/PokeDollar.png" class="mb-1" />
+                </td>
+                <td>
+                    @Html.ActionLink("Clear Cart", "ClearCart", "Cart")
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <a asp-action="Order" asp-controller="Cart" class="btn btn-success">Continue Order</a>
+    </div>
+}
+@if(Model.Count() > 9)
+{
+    <p>
+        <a asp-action="Index" asp-controller="Home">Continue Shopping</a>
+    </p>
+}

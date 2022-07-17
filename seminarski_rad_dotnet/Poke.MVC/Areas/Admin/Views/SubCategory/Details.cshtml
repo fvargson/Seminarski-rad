@@ -1,0 +1,81 @@
+@using Poke.Data.Model
+@model Poke.Data.Model.SubCategory
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>SubCategory</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            Category
+        </dt>
+        <dd class = "col-sm-10">
+            @ViewBag.category
+        </dd>
+    </dl>
+    @if(((List<MyPokemon>)ViewBag.products).Count > 0)
+    {
+        <div>
+            <h5>Products</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in (List<MyPokemon>)ViewBag.products)
+                    {
+                        <tr>
+                            <td><img src="@item.Url_full_image" class="poke_full_small" alt="@item.Name" /></td>
+                            <td>@item.Name</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @if(((List<PokeBundle>)ViewBag.bundles).Count > 0)
+    {
+        <div>
+            <h5>Bundles</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in (List<PokeBundle>)ViewBag.bundles)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.PackDescription</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+<div>
+    @if(Model.Id > 30)
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
+        @Html.DisplayText(" | ")
+    }
+    <a asp-action="Index">Back to List</a>
+</div>

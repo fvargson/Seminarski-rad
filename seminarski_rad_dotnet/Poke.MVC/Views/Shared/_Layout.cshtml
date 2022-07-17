@@ -1,0 +1,209 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject Poke.Data.Interface.IApplicationRepo _app_repo
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Poke.MVC</title>
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Poke.MVC.styles.css" asp-append-version="true" />
+</head>
+<body class="bg-light">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Poke.MVC</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <div class="dropdown">
+                            <a role="button" class="nav-link dropdown-toggle text-dark" id="dropdownMenu1" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Products
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li class="nav-item">
+                                    <div class="btn-group dropend">
+                                        <a role="button" class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="20,0">
+                                            Generation
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            @foreach (var item in _app_repo.GetSubCategories(1))
+                                            {
+                                                <li class="nav-item">
+                                                    <a role="button" class="dropdown-item" type="button" asp-area="" asp-controller="Home" asp-action="Index" asp-route-id="@item.Id">@item.Name</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <div class="btn-group dropend">
+                                        <a role="button" class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Type
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            @foreach (var item in _app_repo.GetSubCategories(2).OrderBy(sc => sc.Name))
+                                            {
+                                                <li class="nav-item">
+                                                    <a role="button" class="dropdown-item" type="button" asp-area="" asp-controller="Home" asp-action="Index" asp-route-id="@item.Id">@item.Name</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <div class="btn-group dropend">
+                                        <a role="button" class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Other
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            @foreach (var item in _app_repo.GetSubCategories(3))
+                                            {
+                                                <li class="nav-item">
+                                                    <a role="button" class="dropdown-item" type="button" asp-area="" asp-controller="Home" asp-action="Index" asp-route-id="@item.Id">@item.Name</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        @if(SignInManager.IsSignedIn(User) && await UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Admin"))
+                        {
+                            <div class="dropdown">
+                                <a role="button" class="nav-link dropdown-toggle text-dark" id="dropdownMenuAdmin" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuAdmin">
+                                    <li class="nav-item">
+                                        <a role="button" class="dropdown-item" type="button" asp-area="Admin" asp-controller="SubCategory" asp-action="Index">Categories</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a role="button" class="dropdown-item" type="button" asp-area="Admin" asp-controller="PokeProduct" asp-action="Index">Products</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a role="button" class="dropdown-item" type="button" asp-area="Admin" asp-controller="PokeBundle" asp-action="Index">Bundles</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a role="button" class="dropdown-item" type="button" asp-area="Admin" asp-controller="Orders" asp-action="Index">Orders</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a role="button" class="dropdown-item" type="button" asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Poke.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script>
+        function onSuccess(googleUser) {
+        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+        }
+        function onFailure(error) {
+        console.log(error);
+        }
+        function renderButton() {
+            gapi.signin2.render('my-signin2', {
+                'scope': 'profile email',
+                'width': 240,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onSuccess,
+                'onfailure': onFailure
+            });
+        }
+
+    function AddPoke()
+    {
+        var element = document.getElementById('PokemonIds');
+        var value = element.value;
+        var name = element.options[element.selectedIndex].text;
+
+        if(document.getElementById('table_row_' + value) != null)
+        {
+            return;
+        }
+
+        var tr = document.createElement('tr');
+        
+        tr.id = 'table_row_' + value;
+
+        var td1 = document.createElement('td');
+        var td2 = document.createElement('td');
+        var td3 = document.createElement('td');
+        var img = document.createElement('img');
+        
+        img.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + value + '.png';
+        img.classList.add('poke_full_small');
+        
+        var chckbox = document.createElement('input');
+        chckbox.type = 'checkbox';
+        chckbox.style.visibility = 'hidden';
+        chckbox.name = 'PokemonIds[]';
+        chckbox.value = value;
+        chckbox.checked = true;
+
+        var removebtn = document.createElement('button');
+        removebtn.type = 'button'
+        removebtn.classList.add('btn');
+        removebtn.classList.add('btn-danger');
+        removebtn.innerHTML = 'Remove';
+        removebtn.onclick = 
+            function() {
+                var tr_remove = document.getElementById('table_row_' + value);
+                tr_remove.remove();
+            }
+
+        td1.appendChild(img);
+        td2.innerHTML = name;
+        td3.appendChild(chckbox);
+        td3.appendChild(removebtn);
+
+        
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+
+        var tbodyinsert = document.getElementById('insertPoke');
+        tbodyinsert.appendChild(tr);
+    }
+    </script>
+    
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

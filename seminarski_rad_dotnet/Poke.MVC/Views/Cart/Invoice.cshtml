@@ -1,0 +1,128 @@
+@model Poke.Data.Model.PokeInvoice
+
+@{
+ViewData["Title"] = "Invoice";
+}
+
+<h2>Invoice</h2>
+
+<div id="invoice-template" class="card-body container">
+    <div id="invoice-customer-details" class="row pt-2">
+        <div class="col-sm-12 text-left text-md-left">
+            <p class="text-muted">
+                <a asp-area="" asp-controller="Home" asp-action="Index">Continue Shopping</a>
+            </p>
+        </div>
+        <div class="col-sm-12 text-center text-md-left">
+            <p class="text-muted">Shipping information</p>
+        </div>
+        <div class="col-md-8 col-sm-12 text-left text-md-left">
+            <ul class="px-0 list-unstyled">
+                <li class="text-bold-800">
+                    @Model.FirstName @Model.LastName
+                </li>
+                <li>
+                    @(Model.Address),
+                </li>
+                <li>
+                    @Model.Country @Model.Zip
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-4 col-sm-12 text-right text-md-right">
+            <p><span class="text-muted">Invoice Date: @Model.DateCreated.ToShortDateString()</span></p>
+            <p><span class="text-muted">Invoice Time: @Model.DateCreated.ToShortTimeString()</span></p>
+        </div>
+    </div>
+    <div id="invoice-items-details" class="pt-2 container">
+        <div class="row">
+            <div class="col-md-5 col-sm-12">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td class="text-bold-800">
+                                    <h3>Total</h3>
+                                </td>
+                                <td class="text-bold-800 text-right">
+                                    <h3>
+                                        @ViewBag.Total
+                                        <img src="~/img/PokeDollar.png" class="mb-1" />
+                                    </h3>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="table-responsive col-sm-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th class="text-right">Price</th>
+                            <th class="text-right">Quantity</th>
+                            <th class="text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                        }
+                        @foreach (var item in (List<Poke.Data.Model.OrderItem>)ViewBag.Items)
+                        {
+                            <tr>
+                                <th scope="row">
+                                    @(++i)
+                                </th>
+                                <td>
+                                    <p>@item.ProductTitle</p>
+                                    @if(item.BundleId != 0)
+                                    {
+                                        <p class="text-muted">@item.ProductDescription</p>
+                                    }
+                                </td>
+                                <td class="text-right">
+                                    @item.Price
+                                    <img src="~/img/PokeDollar.png" class="mb-1" />
+                                </td>
+                                <td class="text-right">
+                                    @item.Quantity
+                                </td>
+                                <td class="text-right">
+                                    @item.Total
+                                    <img src="~/img/PokeDollar.png" class="mb-1" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 col-sm-12">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td class="text-bold-800"><h3>Total</h3></td>
+                                <td class="text-bold-800 text-right">
+                                    <h3>
+                                        @ViewBag.Total
+                                        <img src="~/img/PokeDollar.png" class="mb-1" />
+                                    </h3>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <p class="text-muted">This Invoice is a part of a project and is not a real shopping Invoice</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
