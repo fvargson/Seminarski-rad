@@ -154,11 +154,15 @@ namespace Poke.MVC.Areas.Admin.Controllers
                     {
                         var token = _user_manager.GeneratePasswordResetTokenAsync(user).Result;
 
-                        _user_manager.ResetPasswordAsync(user, token, password);
+                        var res = _user_manager.ResetPasswordAsync(user, token, password).Result;
+                        if(!res.Succeeded)
+                        {
+                            return RedirectToAction("Edit", new { id = Id, errors = res.Errors.Select(error => error.Description).ToList() });
+                        }
                     }
                     else
                     {
-                        return RedirectToAction();
+                        return RedirectToAction("Index");
                     }
                 }
 
