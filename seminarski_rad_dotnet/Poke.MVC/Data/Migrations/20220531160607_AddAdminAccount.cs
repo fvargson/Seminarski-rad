@@ -55,7 +55,14 @@ namespace Poke.MVC.Data.Migrations
                 .AddJsonFile("appsettings.json")
                 .AddUserSecrets("aspnet-Poke.MVC-5101bc29-3f81-4c5a-a6e0-1f3c549ce4ab");
             var config = builder.Build();
-            return config["Poke:AdminPassword"];
+            try
+            {
+                return config["Poke:AdminPassword"]; // Development only
+            }
+            catch
+            {
+                return "Password12345"; // You can change this part to set any password you want Admin to have
+            }
         }
     }
 }
